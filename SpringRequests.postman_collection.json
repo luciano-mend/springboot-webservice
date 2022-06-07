@@ -1,0 +1,561 @@
+{
+	"info": {
+		"_postman_id": "198dfde7-56b8-499b-bb7f-8b1b1d4dd29e",
+		"name": "SpringRequests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "UsersAll",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = JSON.parse(responseBody);\r",
+							"\r",
+							"tests[\"deve retornar id preenchido\"] = resposta[0].id === 1;\r",
+							"tests[\"deve retornar nome correto\"] = resposta[0].name == \"Joana D A Brown\";\r",
+							"tests[\"deve retornar email correto\"] = resposta[0].email == \"joanadarc@gmail.com\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UsersById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"deve retornar id do user\"] = pm.response.json().id === 1;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/{{idBusca}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{idBusca}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UsersByIdNotFound",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = JSON.parse(responseBody);\r",
+							"\r",
+							"tests[\"deve retornar erro 404 tratado\"] = responseCode.code === 404;\r",
+							"tests[\"deve retornar mensagem de erro\"] = resposta.message === \"Resource not found. Id 7\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/7",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UsersInsert",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = JSON.parse(responseBody);\r",
+							"\r",
+							"tests[\"deve inserir User com sucesso\"] = resposta.name === \"Jennifer Walters\";\r",
+							"\r",
+							"pm.collectionVariables.set(\"idUserDelete\", resposta.id);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Jennifer Walters\",\r\n    \"email\": \"jenniwal@gmail.com\",\r\n    \"phone\": \"977557755\",\r\n    \"password\": \"123456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserUpdate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = JSON.parse(responseBody);\r",
+							"var atualizado = (resposta.id === 3 && resposta.name === \"Jennifer Walters She Hulk\" && resposta.email === \"jenniferwalters@gmail.com\")\r",
+							"\r",
+							"tests[\"deve atualizar User com sucesso\"] = atualizado;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Jennifer Walters She Hulk\",\r\n    \"email\": \"jenniferwalters@gmail.com\",\r\n    \"phone\": \"977557755\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserUpdateNotFound",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"deve retornar codigo 404\"] = responseCode.code === 404;\r",
+							"\r",
+							"var resposta = JSON.parse(responseBody);\r",
+							"tests[\"deve retornar DataBase error\"] = resposta.error === \"Resource not found\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Jennifer Walters She Hulk\",\r\n    \"email\": \"jenniferwalters@gmail.com\",\r\n    \"phone\": \"977557755\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/7",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserDelete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"deve retornar codigo 204\"] = responseCode.code === 204;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/{{idUserDelete}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"{{idUserDelete}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserDeleteIdNotFound",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"deve retornar codigo 404\"] = responseCode.code === 404;\r",
+							"\r",
+							"var resposta = JSON.parse(responseBody);\r",
+							"\r",
+							"tests[\"deve retornar DataBase error\"] = resposta.error === \"Resource not found\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/77",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"77"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserDeleteIdIntegrity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"deve retornar code 400\"] = responseCode.code === 400;\r",
+							"\r",
+							"var resposta = JSON.parse(responseBody);\r",
+							"\r",
+							"tests[\"deve retornar DataBase error\"] = resposta.error === \"Database error.\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/users/1",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OdersAll",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = JSON.parse(responseBody);\r",
+							"\r",
+							"var clientOrder1 = resposta[0].client;\r",
+							"var itemsOrder1 = resposta[0].items;\r",
+							"\r",
+							"tests[\"deve retornar orderStatus PAID\"] = resposta[0].orderStatus === \"PAID\";\r",
+							"tests[\"deve retornar cliente Joana\"] = clientOrder1.name === \"Joana D A Brown\";\r",
+							"tests[\"deve retornar itens da order 1\"] = itemsOrder1.count() === 2;\r",
+							"\r",
+							"tests[\"deve retornear orderStatus Waiting payment\"] = resposta[1].orderStatus === \"WAITING_PAYMENT\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/orders",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OrdersById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"deve retornar id da order\"] = pm.response.json().id === 1;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/orders/{{idBusca}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"orders",
+						"{{idBusca}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CategoriesAll",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = JSON.parse(responseBody);\r",
+							"\r",
+							"tests[\"deve retornar name1 correto\"] = resposta[0].name === \"Electronics\";\r",
+							"tests[\"deve retornar name2 correto\"] = resposta[1].name === \"Books\";\r",
+							"tests[\"deve retornar name3 correto\"] = resposta[2].name === \"Computers\";"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/categories",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CategoriesById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"deve retornar id da category\"] = pm.response.json().id === 1;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/categories/{{idBusca}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"categories",
+						"{{idBusca}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProductsAll",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = JSON.parse(responseBody);\r",
+							"var categoriesProduct1 = resposta[0].categories;\r",
+							"\r",
+							"tests[\"deve retornar id preenchido\"] = resposta[0].id === 1;\r",
+							"tests[\"deve retornar category 1 para product do id 1\"] = categoriesProduct1[0].name === \"Books\";\r",
+							"tests[\"deve retornar nome correto do produto\"] = resposta[0].name == \"The Lord of the Rings\";\r",
+							"\r",
+							"var categoriesProduct2 = resposta[1].categories;\r",
+							"tests[\"deve retornear as 2 categories para o product do id 2\"] = (resposta[1].id == 2 && categoriesProduct2.count() == 2);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/products",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProductsById",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resposta = JSON.parse(responseBody);\r",
+							"var categories = resposta.categories;\r",
+							"\r",
+							"tests[\"deve retornar id da category\"] = categories[0].id === 2;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/products/{{idBusca}}",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"products",
+						"{{idBusca}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "idBusca",
+			"value": "1"
+		},
+		{
+			"key": "idUserDelete",
+			"value": "3"
+		}
+	]
+}
